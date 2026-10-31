@@ -29,6 +29,9 @@ completos no cache local, `auto` informa o fallback e usa BM25; pedidos explíci
 
 ## Servidor MCP
 
+Pelo Compose da raiz, `legal-index` constrói o índice BM25 em um volume antes de iniciar
+este serviço. Para rodar o serviço isoladamente:
+
 ```powershell
 python -m legal_rag serve --host 127.0.0.1 --port 8001
 ```
