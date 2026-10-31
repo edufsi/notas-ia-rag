@@ -2,7 +2,7 @@ import unittest
 from collections import defaultdict
 
 from avaliar import metricas, rotulos_por_trecho
-from busca_lexical import PESOS_BM25
+from legal_rag.lexical import PESOS_BM25
 from ingestao import extrair_trechos_textuais
 
 

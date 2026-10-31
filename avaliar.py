@@ -39,15 +39,15 @@ KS = (1, 3, 5, 10)
 
 def recuperadores():
     """Nome -> função que cria o recuperador (importações pesadas só quando usado)."""
-    from busca_lexical import BuscaLexical
-    opcoes = {"lexical": BuscaLexical}
+    from legal_rag.lexical import LexicalRetriever
+    opcoes = {"lexical": LexicalRetriever}
     for modelo in ("e5-small", "e5-base", "bge-m3"):
         def densa(m=modelo):
-            from busca_densa import BuscaDensa
-            return BuscaDensa(m)
+            from legal_rag.dense import DenseRetriever
+            return DenseRetriever(m)
         def hibrida(m=modelo):
-            from busca_densa import BuscaHibrida
-            return BuscaHibrida(m)
+            from legal_rag.dense import DenseRetriever, HybridRetriever
+            return HybridRetriever(LexicalRetriever(), DenseRetriever(m))
         opcoes[f"densa-{modelo}"] = densa
         opcoes[f"hibrida-{modelo}"] = hibrida
     return opcoes
