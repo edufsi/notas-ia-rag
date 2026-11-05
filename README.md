@@ -37,7 +37,6 @@ O índice denso precisa ser refeito sempre que o corpus mudar (o script avisa).
 | `busca_lexical.py` | Busca BM25 com SQLite FTS5 (linha de base) |
 | `busca_densa.py` | Busca densa (embeddings + FAISS) e híbrida (BM25 + densa por RRF) |
 | `avaliacao/gabarito.yaml` | Perguntas leigas com os artigos que as respondem |
-| `avaliacao/banco_de_temas.md` | Cartões de assuntos ainda pouco cobertos para o grupo redigir novas perguntas |
 | `avaliar.py` | Mede acerto@k, recall@k, MRR e nDCG@10 contra o gabarito |
 | `avaliacao/resultados/` | Resultado de cada avaliação, por recuperador e versão do corpus |
 | `editor/` | Aplicação local para escrever e revisar o gabarito ([como usar](editor/README.md)) |
@@ -56,39 +55,56 @@ O jeito mais fácil é pelo **editor do gabarito**: `python editor/servidor.py` 
 3. Duas pessoas conferem, sem ver a resposta uma da outra; divergências são discutidas.
 4. Só então o `status` vira `revisado`. Por padrão, o `avaliar.py` usa só os revisados.
 
-O gabarito tem agora 78 perguntas em **rascunho**: as 32 iniciais e 46 selecionadas e
-humanizadas no banco de temas. As novas permanecem sem revisores até a conferência no
-editor. Meta futura: 150 a 300.
-O [`banco de temas`](avaliacao/banco_de_temas.md) separa situações leigas da referência
-técnica, para que novas perguntas possam ser escritas de forma natural antes de consultar
-os artigos candidatos.
+O gabarito tem agora 77 perguntas em **rascunho**: 31 iniciais, escritas com auxílio de
+IA, e 46 escritas pelo grupo a partir de temas da legislação. Quem escreve uma pergunta
+não é revisor dela. Meta: 150 a 300.
 
 ## Resultados (provisórios)
 
-Corpus atual `68fa3d5ea28f`, gabarito com 78 perguntas em **rascunho**: 66 com resposta
-e 12 sem resposta. A linha BM25 foi reexecutada nesse corpus e conjunto; as linhas densas
-e híbridas abaixo ainda são históricas, produzidas com 32 perguntas no corpus
-`428510e4d5f5`, e não são diretamente comparáveis até serem reexecutadas.
+### Estado do teste
+
+| | |
+|---|---|
+| Data | 04/11/2026 |
+| Corpus | versão `68fa3d5ea28f`: 96 trechos (93 de legislação + 3 de jurisprudência), 9 fontes |
+| Gabarito | versão `ce98fa8bdb91`: 77 perguntas, **todas em rascunho** (0 revisadas) |
+| Perguntas usadas | 66 com resposta (37 coloquiais, 15 diretas, 14 adversas) e 11 sem resposta |
+| Comando | `avaliar.py --incluir-rascunho --recuperador <nome>` |
+| Arquivos | `avaliacao/resultados/<recuperador>-68fa3d5ea28f-ce98fa8bdb91.json` |
+
+As versões são hashes do conteúdo (`corpus/manifesto.json` e `avaliacao/gabarito.yaml`):
+qualquer mudança no corpus ou no gabarito gera outra versão, e o `avaliar.py` grava cada
+resultado num arquivo próprio. Com o gabarito ainda sem revisão, os números servem para
+comparar as buscas entre si, não como medida final. Com 66 perguntas, cada uma vale
+~1,5 ponto no acerto.
+
+### Avaliação por artigo (66 perguntas)
 
 | Recuperador | acerto@1 | acerto@3 | acerto@5 | MRR | nDCG@10 |
 |---|---|---|---|---|---|
-| BM25 (`lexical`, 78 perguntas) | 0,41 | 0,50 | 0,65 | 0,50 | 0,53 |
-| Densa e5-small | 0,48 | 0,69 | 0,79 | 0,61 | 0,66 |
-| Híbrida e5-small | 0,52 | 0,79 | 0,83 | 0,64 | 0,67 |
-| Densa e5-base | 0,45 | 0,62 | 0,90 | 0,59 | 0,63 |
-| Híbrida e5-base | 0,41 | 0,76 | 0,86 | 0,60 | 0,64 |
-| **Densa BGE-M3** | **0,66** | **0,79** | **0,86** | **0,75** | **0,76** |
-| Híbrida BGE-M3 | 0,52 | 0,76 | 0,83 | 0,66 | 0,70 |
+| BM25 (`lexical`) | 0,44 | 0,53 | 0,68 | 0,53 | 0,56 |
+| Densa e5-small | 0,45 | 0,68 | 0,79 | 0,59 | 0,64 |
+| Híbrida e5-small | 0,45 | 0,71 | 0,79 | 0,59 | 0,63 |
+| Densa e5-base | 0,45 | 0,62 | 0,82 | 0,59 | 0,64 |
+| Híbrida e5-base | 0,45 | 0,71 | 0,79 | 0,60 | 0,65 |
+| **Densa BGE-M3** | **0,59** | **0,76** | **0,83** | **0,70** | **0,72** |
+| Híbrida BGE-M3 | 0,48 | 0,73 | 0,79 | 0,63 | 0,66 |
 
-- Toda busca densa supera a BM25, principalmente em perguntas coloquiais.
-- A BGE-M3 sozinha foi a melhor; somar a BM25 a ela piorou o ranking.
+Na avaliação por trecho (58 perguntas; 8 aguardam a indicação da parte em artigos
+divididos), a ordem é a mesma: BGE-M3 densa com acerto@1 0,60 e MRR 0,70; BM25 com
+0,47 e 0,55.
+
+- A **BGE-M3 densa** continua a melhor em todas as métricas.
+- Somar a BM25 à BGE-M3 (híbrida) **piora** o resultado; com a e5, a híbrida ajuda pouco.
+- O ganho maior da busca densa está nas perguntas **diretas** (BGE-M3: acerto@1 0,87,
+  contra 0,60 da BM25) e **coloquiais** (0,51 contra 0,35).
 - **Nenhum recuperador separa as perguntas sem resposta**: o escore do 1º resultado
   delas fica na mesma faixa das perguntas com resposta. A recusa vai precisar de outro
   sinal (reranqueador ou verificação pela LLM), não de um limiar no escore da busca.
 
-Os números híbridos da tabela foram produzidos antes da correção dos pesos de coluna
-do BM25 e devem ser reexecutados antes de uma comparação formal. As linhas puramente
-densas não dependem dessa correção.
+Resultados de testes anteriores (outros corpus e gabaritos) continuam em
+`avaliacao/resultados/`, com a versão no nome do arquivo, mas não são comparáveis com esta
+tabela.
 
 O avaliador preserva as métricas por artigo e também calcula métricas por trecho. Para
 artigos não divididos, o rótulo é automático. Artigos divididos exigem os campos

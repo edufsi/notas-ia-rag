@@ -22,6 +22,7 @@ do primeiro resultado, que servirá para calibrar o limiar de recusa.
 
 import argparse
 import datetime as dt
+import hashlib
 import json
 import math
 import re
@@ -167,8 +168,16 @@ def main():
     parser.add_argument("--detalhes", action="store_true")
     args = parser.parse_args()
 
-    perguntas = yaml.safe_load(GABARITO.read_text(encoding="utf-8"))["perguntas"]
+    texto_gabarito = GABARITO.read_text(encoding="utf-8")
+    perguntas = yaml.safe_load(texto_gabarito)["perguntas"]
     rascunhos = sum(1 for p in perguntas if p.get("status") != "revisado")
+    # identifica a "prova" usada: qualquer edição no gabarito muda a versão
+    gabarito = {
+        "versao": hashlib.sha256(texto_gabarito.encode("utf-8")).hexdigest()[:12],
+        "perguntas": len(perguntas),
+        "revisadas": len(perguntas) - rascunhos,
+        "rascunho": rascunhos,
+    }
     if not args.incluir_rascunho:
         perguntas = [p for p in perguntas if p.get("status") == "revisado"]
     if not perguntas:
@@ -227,7 +236,7 @@ def main():
                 print(f"   {i}. {marca(a)} {s:6.2f} {a}")
 
     nomes = [f"acerto@{k}" for k in KS] + ["recall@5", "recall@10", "MRR", "nDCG@10"]
-    print(f"\nRecuperador: {args.recuperador} · corpus {corpus['versao']} · "
+    print(f"\nRecuperador: {args.recuperador} · corpus {corpus['versao']} · gabarito {gabarito['versao']} · "
           f"{len(com_resposta)} perguntas com resposta, {len(sem_resposta)} sem resposta"
           + (f" · ATENÇÃO: inclui {rascunhos} rascunhos" if args.incluir_rascunho else ""))
     grupos = imprimir_tabela("Avaliação por artigo", com_resposta, por_tipo, nomes)
@@ -248,10 +257,11 @@ def main():
             print(f"   sem resposta: {s['score_topo']:.2f}  {s['pergunta']}")
 
     RESULTADOS.mkdir(parents=True, exist_ok=True)
-    saida = RESULTADOS / f"{args.recuperador}-{corpus['versao']}.json"
+    # o nome leva corpus e gabarito: uma avaliação nova não apaga o histórico de outra prova
+    saida = RESULTADOS / f"{args.recuperador}-{corpus['versao']}-{gabarito['versao']}.json"
     saida.write_text(json.dumps({
         "recuperador": args.recuperador, "corpus": corpus["versao"], "data": dt.date.today().isoformat(),
-        "inclui_rascunho": args.incluir_rascunho,
+        "gabarito": gabarito, "inclui_rascunho": args.incluir_rascunho,
         "medias": {nome: {n: media(linhas, n) for n in nomes} for nome, linhas in grupos},
         "medias_trecho": {
             nome: {n: media(linhas, n) for n in nomes} for nome, linhas in grupos_trecho
