@@ -38,6 +38,7 @@ O índice denso precisa ser refeito sempre que o corpus mudar (o script avisa).
 | `busca_densa.py` | Busca densa (embeddings + FAISS) e híbrida (BM25 + densa por RRF) |
 | `avaliacao/gabarito.yaml` | Perguntas leigas com os artigos que as respondem |
 | `avaliar.py` | Mede acerto@k, recall@k, MRR e nDCG@10 contra o gabarito |
+| `comparar.py` | Compara recuperadores de uma mesma prova, com intervalos de confiança |
 | `avaliacao/resultados/` | Resultado de cada avaliação, por recuperador e versão do corpus |
 | `editor/` | Aplicação local para escrever e revisar o gabarito ([como usar](editor/README.md)) |
 
@@ -65,42 +66,79 @@ não é revisor dela. Meta: 150 a 300.
 
 | | |
 |---|---|
-| Data | 04/11/2026 |
+| Data | 07/11/2026 |
 | Corpus | versão `68fa3d5ea28f`: 96 trechos (93 de legislação + 3 de jurisprudência), 9 fontes |
-| Gabarito | versão `ce98fa8bdb91`: 77 perguntas, **todas em rascunho** (0 revisadas) |
-| Perguntas usadas | 66 com resposta (37 coloquiais, 15 diretas, 14 adversas) e 11 sem resposta |
-| Comando | `avaliar.py --incluir-rascunho --recuperador <nome>` |
-| Arquivos | `avaliacao/resultados/<recuperador>-68fa3d5ea28f-ce98fa8bdb91.json` |
+| Gabarito | versão `7e4ef9e1910b`: 166 perguntas, 31 revisadas e 135 em rascunho |
+| Perguntas usadas | 143 com resposta (78 coloquiais, 33 adversas, 32 diretas) e 23 sem resposta |
+| Comandos | `avaliar.py --incluir-rascunho --recuperador <nome>` e `comparar.py 68fa3d5ea28f-7e4ef9e1910b` |
+| Arquivos | `avaliacao/resultados/<recuperador>-68fa3d5ea28f-7e4ef9e1910b.json` |
 
 As versões são hashes do conteúdo (`corpus/manifesto.json` e `avaliacao/gabarito.yaml`):
-qualquer mudança no corpus ou no gabarito gera outra versão, e o `avaliar.py` grava cada
-resultado num arquivo próprio. Com o gabarito ainda sem revisão, os números servem para
-comparar as buscas entre si, não como medida final. Com 66 perguntas, cada uma vale
-~1,5 ponto no acerto.
+qualquer mudança gera outra versão, e cada resultado fica num arquivo próprio. Como a maior
+parte do gabarito ainda não foi revisada, os números servem para comparar as buscas entre
+si, não como medida final.
 
-### Avaliação por artigo (66 perguntas)
+### Avaliação por artigo (143 perguntas)
 
-| Recuperador | acerto@1 | acerto@3 | acerto@5 | MRR | nDCG@10 |
-|---|---|---|---|---|---|
-| BM25 (`lexical`) | 0,44 | 0,53 | 0,68 | 0,53 | 0,56 |
-| Densa e5-small | 0,45 | 0,68 | 0,79 | 0,59 | 0,64 |
-| Híbrida e5-small | 0,45 | 0,71 | 0,79 | 0,59 | 0,63 |
-| Densa e5-base | 0,45 | 0,62 | 0,82 | 0,59 | 0,64 |
-| Híbrida e5-base | 0,45 | 0,71 | 0,79 | 0,60 | 0,65 |
-| **Densa BGE-M3** | **0,59** | **0,76** | **0,83** | **0,70** | **0,72** |
-| Híbrida BGE-M3 | 0,48 | 0,73 | 0,79 | 0,63 | 0,66 |
+As partes `-p1`/`-p2` de um artigo dividido contam como um só artigo.
 
-Na avaliação por trecho (58 perguntas; 8 aguardam a indicação da parte em artigos
-divididos), a ordem é a mesma: BGE-M3 densa com acerto@1 0,60 e MRR 0,70; BM25 com
-0,47 e 0,55.
+| Recuperador | acerto@1 | acerto@3 | acerto@5 | acerto@10 | recall@5 | recall@10 | MRR | nDCG@10 |
+|---|---|---|---|---|---|---|---|---|
+| BM25 (`lexical`) | 0,34 | 0,50 | 0,57 | 0,68 | 0,50 | 0,62 | 0,44 | 0,46 |
+| Densa e5-small | 0,37 | 0,57 | 0,66 | 0,83 | 0,57 | 0,72 | 0,50 | 0,52 |
+| Híbrida e5-small | 0,40 | 0,61 | 0,73 | 0,84 | 0,63 | 0,75 | 0,53 | 0,54 |
+| Densa e5-base | 0,39 | 0,60 | 0,76 | 0,87 | 0,65 | 0,78 | 0,54 | 0,56 |
+| Híbrida e5-base | 0,41 | 0,66 | 0,78 | 0,86 | 0,67 | 0,77 | 0,56 | 0,58 |
+| **Densa BGE-M3** | **0,50** | **0,71** | **0,80** | **0,89** | **0,70** | 0,79 | **0,63** | **0,62** |
+| Híbrida BGE-M3 | 0,48 | 0,64 | 0,76 | 0,88 | 0,66 | **0,80** | 0,60 | 0,61 |
 
-- A **BGE-M3 densa** continua a melhor em todas as métricas.
-- Somar a BM25 à BGE-M3 (híbrida) **piora** o resultado; com a e5, a híbrida ajuda pouco.
-- O ganho maior da busca densa está nas perguntas **diretas** (BGE-M3: acerto@1 0,87,
-  contra 0,60 da BM25) e **coloquiais** (0,51 contra 0,35).
-- **Nenhum recuperador separa as perguntas sem resposta**: o escore do 1º resultado
-  delas fica na mesma faixa das perguntas com resposta. A recusa vai precisar de outro
-  sinal (reranqueador ou verificação pela LLM), não de um limiar no escore da busca.
+Por tipo de pergunta (acerto@1, BGE-M3 densa × BM25): diretas 0,72 × 0,59, coloquiais
+0,47 × 0,26, adversas 0,36 × 0,27.
+
+### Avaliação por trecho (143 perguntas)
+
+Cada parte de um artigo dividido conta separadamente: trazer o `art22-p2` quando a
+resposta está no `art22-p1` não é acerto. É a medida mais próxima do que a LLM vai ler.
+Todas as 143 perguntas têm a parte certa indicada no gabarito.
+
+| Recuperador | acerto@1 | acerto@3 | acerto@5 | acerto@10 | recall@5 | recall@10 | MRR | nDCG@10 |
+|---|---|---|---|---|---|---|---|---|
+| BM25 (`lexical`) | 0,34 | 0,49 | 0,56 | 0,66 | 0,49 | 0,60 | 0,43 | 0,45 |
+| Densa e5-small | 0,36 | 0,55 | 0,65 | 0,83 | 0,55 | 0,71 | 0,49 | 0,51 |
+| Híbrida e5-small | 0,39 | 0,59 | 0,72 | 0,84 | 0,62 | 0,73 | 0,52 | 0,53 |
+| Densa e5-base | 0,39 | 0,59 | 0,75 | 0,87 | 0,63 | 0,77 | 0,54 | 0,55 |
+| Híbrida e5-base | 0,41 | 0,66 | 0,78 | 0,86 | 0,67 | 0,76 | 0,56 | 0,57 |
+| **Densa BGE-M3** | **0,50** | **0,71** | **0,80** | **0,88** | **0,69** | 0,77 | **0,62** | **0,61** |
+| Híbrida BGE-M3 | 0,48 | 0,63 | 0,76 | 0,87 | 0,65 | **0,78** | 0,59 | 0,60 |
+
+A ordem entre os recuperadores é a mesma da avaliação por artigo; os valores ficam de 0
+a 0,03 abaixo, pelas perguntas em que veio a parte errada de um artigo dividido.
+
+### O que é conclusivo
+
+`comparar.py` calcula intervalos de confiança de 95% por bootstrap pareado (as mesmas
+perguntas sorteadas para todos os recuperadores). No MRR:
+
+| Recuperador | MRR | Diferença para a BGE-M3 densa | Conclusiva? |
+|---|---|---|---|
+| Densa BGE-M3 | 0,63 [0,57; 0,69] | — | — |
+| Híbrida BGE-M3 | 0,60 | −0,03 [−0,09; +0,03] | Não |
+| Híbrida e5-base | 0,56 | −0,07 [−0,14; 0,00] | No limite |
+| Densa e5-base | 0,54 | −0,09 [−0,16; −0,02] | Sim |
+| Híbrida e5-small | 0,53 | −0,10 [−0,17; −0,03] | Sim |
+| Densa e5-small | 0,50 | −0,13 [−0,20; −0,06] | Sim |
+| BM25 | 0,44 | −0,19 [−0,27; −0,12] | Sim |
+
+- A **BGE-M3** (densa ou híbrida) é melhor que a BM25 e que as e5 densas, com diferença
+  conclusiva. Entre a BGE-M3 densa e a híbrida, a diferença **não** é conclusiva.
+- No acerto@5, as cinco melhores ficam empatadas dentro do intervalo; o ganho da BGE-M3
+  aparece na **ordem** (acerto@1 e MRR), que é o que decide quais trechos chegam à LLM.
+- Os números caíram em relação ao teste anterior (66 perguntas) porque o gabarito novo é
+  mais difícil: mais perguntas coloquiais e adversas, e mais perguntas com vários artigos
+  relevantes.
+- **A recusa não sai do escore da busca.** Com o melhor limiar possível, a BGE-M3 recusa
+  só 3 das 23 perguntas sem resposta (sem recusar nenhuma com resposta); as híbridas e a
+  BM25, nenhuma. A recusa precisa de outro sinal (reranqueador ou verificação pela LLM).
 
 Resultados de testes anteriores (outros corpus e gabaritos) continuam em
 `avaliacao/resultados/`, com a versão no nome do arquivo, mas não são comparáveis com esta
