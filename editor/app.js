@@ -18,8 +18,14 @@ function nomeCurto(documento) {
   return m ? m[1] : documento;
 }
 
+// Nome do artigo, sem a parte: "Art. 22 (parte 1/2)" e "Art. 7, inciso I" viram "Art. 22" e "Art. 7"
 function rotulo(trecho) {
-  return `${nomeCurto(trecho.documento)} · ${trecho.secao.replace(/ \(parte.*\)$/, "")}`;
+  return `${nomeCurto(trecho.documento)} · ${trecho.secao.replace(/ \(parte.*\)$/, "").replace(/, inciso .*$/, "")}`;
+}
+
+// Qual parte de um artigo dividido: "parte 1/2" ou "inciso IV"
+function nomeDaParte(trecho) {
+  return trecho.secao.match(/parte [^)]+|inciso .+$/)?.[0] || trecho.id;
 }
 
 function semAcento(texto) {
@@ -156,7 +162,7 @@ createApp({
 
     const opcoesTrechos = computed(() => trechos.value.map((t) => ({
       id: t.id,
-      rotulo: `${rotulo(t)}${/-p\d+$/.test(t.id) ? ` · ${t.secao.match(/parte [^)]+/)?.[0] || t.id}` : ""}`,
+      rotulo: `${rotulo(t)}${/-p\d+$/.test(t.id) ? ` · ${nomeDaParte(t)}` : ""}`,
       previa: t.texto.slice(0, 220),
       busca: semAcento(`${rotulo(t)} ${t.id} ${t.texto}`),
     })));

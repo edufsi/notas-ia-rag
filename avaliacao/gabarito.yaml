@@ -23,12 +23,14 @@ perguntas:
     pergunta: O que é violência patrimonial?
     tipo: direta
     relevantes: [lei-11340-2006:art7]
+    trechos_relevantes: [lei-11340-2006:art7-p4]
     status: revisado
     revisores: [eduardo-f, joão]
   - id: q002
     pergunta: ele pega meu salário e não deixa eu trabalhar, isso é violência?
     tipo: coloquial
     relevantes: [lei-11340-2006:art7]
+    trechos_relevantes: [lei-11340-2006:art7-p4, lei-11340-2006:art7-p2]
     status: revisado
     revisores: [eduardo-f, joão]
   - id: q003
@@ -36,24 +38,28 @@ perguntas:
     tipo: direta
     relevantes: [lei-11340-2006:art7]
     parciais: [lei-11340-2006:art5, decreto-1973-1996:art2]
+    trechos_relevantes: [lei-11340-2006:art7-p1, lei-11340-2006:art7-p2, lei-11340-2006:art7-p3, lei-11340-2006:art7-p4, lei-11340-2006:art7-p5, lei-11340-2006:art7-p6]
     status: revisado
     revisores: [eduardo-f, joão]
   - id: q004
     pergunta: ele quebrou meu celular de raiva
     tipo: coloquial
     relevantes: [lei-11340-2006:art7, codigo-penal:art163]
+    trechos_relevantes: [lei-11340-2006:art7-p4]
     status: revisado
     revisores: [eduardo-f, joão]
   - id: q005
     pergunta: ele pegou meus documentos e não quer devolver
     tipo: coloquial
     relevantes: [lei-11340-2006:art7, lei-11340-2006:art24]
+    trechos_relevantes: [lei-11340-2006:art7-p4]
     status: revisado
     revisores: [eduardo-f, joão]
   - id: q006
     pergunta: ele xinga eu de burra e vagabunda o tempo todo
     tipo: adversa
     relevantes: [codigo-penal:art140, lei-11340-2006:art7]
+    trechos_relevantes: [lei-11340-2006:art7-p5, lei-11340-2006:art7-p2]
     status: revisado
     revisores: [eduardo-f, joão]
   - id: q007
@@ -121,6 +127,7 @@ perguntas:
     tipo: coloquial
     relevantes: [codigo-penal:art147-A]
     parciais: [lei-11340-2006:art7]
+    trechos_parciais: [lei-11340-2006:art7-p2]
     status: revisado
     revisores: [eduardo-f, joão]
   - id: q017
@@ -128,6 +135,7 @@ perguntas:
     tipo: coloquial
     relevantes: [codigo-penal:art147-B]
     parciais: [lei-11340-2006:art7]
+    trechos_parciais: [lei-11340-2006:art7-p2]
     status: revisado
     revisores: [eduardo-f, joão]
   - id: q018
@@ -156,6 +164,7 @@ perguntas:
     tipo: coloquial
     relevantes: [codigo-penal:art213]
     parciais: [lei-11340-2006:art7]
+    trechos_parciais: [lei-11340-2006:art7-p3]
     status: revisado
     revisores: [eduardo-f, joão]
   - id: q022
@@ -473,6 +482,7 @@ perguntas:
     pergunta: Ele me tocou de forma sexual sem eu permitir, isso e crime?
     tipo: adversa
     relevantes: [codigo-penal:art215-A, lei-11340-2006:art7]
+    trechos_relevantes: [lei-11340-2006:art7-p3]
     status: rascunho
     revisores: [joão]
     origem: grupo
@@ -481,6 +491,7 @@ perguntas:
     tipo: coloquial
     relevantes: [codigo-penal:art216-B]
     parciais: [codigo-penal:art218-C, lei-11340-2006:art7]
+    trechos_parciais: [lei-11340-2006:art7-p2]
     status: rascunho
     revisores: [joão]
     origem: grupo
@@ -558,6 +569,7 @@ perguntas:
     pergunta: Meu namorado me manda calar a boca toda festa de familia.
     tipo: coloquial
     relevantes: [lei-11340-2006:art7, codigo-penal:art147-B]
+    trechos_relevantes: [lei-11340-2006:art7-p2]
     status: rascunho
     origem: grupo
   - id: q080
@@ -571,18 +583,21 @@ perguntas:
     pergunta: Sou humilhada por ele todo dia, devo denunciar?
     tipo: coloquial
     relevantes: [lei-11340-2006:art7, codigo-penal:art147-B]
+    trechos_relevantes: [lei-11340-2006:art7-p2]
     status: rascunho
     origem: grupo
   - id: q082
     pergunta: Ele me xinga todo dia por eu não arrumar a casa do jeito que ele quer
     tipo: coloquial
     relevantes: [lei-11340-2006:art7, codigo-penal:art147-B]
+    trechos_relevantes: [lei-11340-2006:art7-p2, lei-11340-2006:art7-p5]
     status: rascunho
     origem: grupo
   - id: q083
     pergunta: Ele têm me perseguido bastante. Vejo ele em tudo que é lugar. Devo chamar polícia?
     tipo: coloquial
     relevantes: [codigo-penal:art147-A, lei-11340-2006:art7]
+    trechos_relevantes: [lei-11340-2006:art7-p2]
     status: rascunho
     origem: grupo
   - id: q084
@@ -603,12 +618,14 @@ perguntas:
     pergunta: É normal em uma relação ele tirar meu celular de mim?
     tipo: coloquial
     relevantes: [lei-11340-2006:art7]
+    trechos_relevantes: [lei-11340-2006:art7-p4]
     status: rascunho
     origem: grupo
   - id: q087
     pergunta: Hoje no trabalho meu ex apareceu e me ameaçou dizendo que se eu não voltar com ele, ele vai me bater
     tipo: coloquial
     relevantes: [lei-11340-2006:art7, codigo-penal:art147]
+    trechos_relevantes: [lei-11340-2006:art7-p2]
     status: rascunho
     origem: grupo
   - id: q088
@@ -621,12 +638,14 @@ perguntas:
     pergunta: hj ele disse que eu n mereço os meus filhos e vai tirar eles de mim
     tipo: adversa
     relevantes: [lei-11340-2006:art7]
+    trechos_relevantes: [lei-11340-2006:art7-p2]
     status: rascunho
     origem: grupo
   - id: q091
     pergunta: Ontem ele disse que vai levar meus filhos embora com ele para outro estado.
     tipo: coloquial
     relevantes: [lei-11340-2006:art7]
+    trechos_relevantes: [lei-11340-2006:art7-p2]
     status: rascunho
     origem: grupo
   - id: q092
@@ -697,12 +716,14 @@ perguntas:
     pergunta: Ontem numa briga ele pegou meu notebook e jogou no chão, todo o meu trabalho foi fora.
     tipo: coloquial
     relevantes: [codigo-penal:art163, lei-11340-2006:art7]
+    trechos_relevantes: [lei-11340-2006:art7-p4]
     status: rascunho
     origem: grupo
   - id: q104
     pergunta: Hj ele jogou meu note na parede numa briga
     tipo: adversa
     relevantes: [codigo-penal:art163, lei-11340-2006:art7]
+    trechos_relevantes: [lei-11340-2006:art7-p4]
     status: rascunho
     origem: grupo
   - id: q105
@@ -729,6 +750,7 @@ perguntas:
     pergunta: Ele disse que se eu falar pra alguém que me bateu, vai fugir com nossos filhos
     tipo: coloquial
     relevantes: [lei-11340-2006:art7]
+    trechos_relevantes: [lei-11340-2006:art7-p2]
     status: rascunho
     origem: grupo
   - id: q109
@@ -747,12 +769,14 @@ perguntas:
     pergunta: Disse que eu sou inutil e que as coisas vão piorar pra mim se eu não mudar
     tipo: coloquial
     relevantes: [lei-11340-2006:art5, lei-11340-2006:art7]
+    trechos_relevantes: [lei-11340-2006:art7-p2]
     status: rascunho
     origem: grupo
   - id: q112
     pergunta: Essa semana ele me ameaçou dizendo q vai bater em mim se eu falar sobre as coisas que ele fez
     tipo: coloquial
     relevantes: [lei-11340-2006:art7, codigo-penal:art147]
+    trechos_relevantes: [lei-11340-2006:art7-p2]
     status: rascunho
     origem: grupo
   - id: q113
@@ -765,12 +789,14 @@ perguntas:
     pergunta: Ontem ele quebrou minha televisão dizendo que não mereço
     tipo: coloquial
     relevantes: [lei-11340-2006:art7, codigo-penal:art163]
+    trechos_relevantes: [lei-11340-2006:art7-p4]
     status: rascunho
     origem: grupo
   - id: q115
     pergunta: Ele não quer devolver meu celular, só se eu tiver relações sexuais com ele
     tipo: coloquial
     relevantes: [lei-11340-2006:art7]
+    trechos_relevantes: [lei-11340-2006:art7-p4, lei-11340-2006:art7-p3]
     status: rascunho
     origem: grupo
   - id: q116
@@ -778,6 +804,7 @@ perguntas:
     tipo: coloquial
     relevantes: [lei-11340-2006:art7, codigo-penal:art215-A]
     parciais: [codigo-penal:art213]
+    trechos_relevantes: [lei-11340-2006:art7-p3]
     status: rascunho
     origem: grupo
   - id: q117
@@ -815,12 +842,14 @@ perguntas:
     pergunta: Ele fica me seguindo quando saio de casa, estou com medo
     tipo: coloquial
     relevantes: [codigo-penal:art147-A, codigo-penal:art147-B, lei-11340-2006:art7]
+    trechos_relevantes: [lei-11340-2006:art7-p2]
     status: rascunho
     origem: grupo
   - id: q123
     pergunta: Ontem a gente estava conversando e disse que estou com um amigo novo no trabalho, ele ficou muito brabo e me deu um tapa no rosto
     tipo: coloquial
     relevantes: [lei-11340-2006:art7]
+    trechos_relevantes: [lei-11340-2006:art7-p1]
     status: rascunho
     origem: grupo
   - id: q124
@@ -934,6 +963,7 @@ perguntas:
     pergunta: Hj ele me deixou de olho roxo apos uma discussao
     tipo: adversa
     relevantes: [lei-11340-2006:art7]
+    trechos_relevantes: [lei-11340-2006:art7-p1]
     status: rascunho
     origem: grupo
   - id: q142
@@ -946,18 +976,21 @@ perguntas:
     pergunta: hj ele me prendeu no quarto sem celular por tres horas
     tipo: adversa
     relevantes: [codigo-penal:art148, lei-11340-2006:art7]
+    trechos_relevantes: [lei-11340-2006:art7-p2, lei-11340-2006:art7-p4]
     status: rascunho
     origem: grupo
   - id: q144
     pergunta: Ele destroiu todas as minhas pinturas novas que comprei
     tipo: adversa
     relevantes: [codigo-penal:art163, lei-11340-2006:art7]
+    trechos_relevantes: [lei-11340-2006:art7-p4]
     status: rascunho
     origem: grupo
   - id: q145
     pergunta: disse que cometi crimes para os amigos dele, e n fiz nada
     tipo: adversa
     relevantes: [lei-11340-2006:art7, codigo-penal:art138]
+    trechos_relevantes: [lei-11340-2006:art7-p5]
     status: rascunho
     origem: grupo
   - id: q146
@@ -976,6 +1009,7 @@ perguntas:
     pergunta: ele disse q vai matar meus filhos se eu contar pra alguem o que ele fez cmg
     tipo: adversa
     relevantes: [codigo-penal:art147, lei-11340-2006:art7]
+    trechos_relevantes: [lei-11340-2006:art7-p6, lei-11340-2006:art7-p2]
     status: rascunho
     origem: grupo
   - id: q149
@@ -1027,18 +1061,21 @@ perguntas:
     pergunta: Ele fica dizendo que não mereço a casa e os filhos q eu tenho, q vou perder tudo
     tipo: coloquial
     relevantes: [lei-11340-2006:art7]
+    trechos_relevantes: [lei-11340-2006:art7-p2, lei-11340-2006:art7-p5]
     status: rascunho
     origem: grupo
   - id: q157
     pergunta: Ele fica me seguindo quando eu saaio de csa e esperando na porta do trabalho. Isso eh crime?
     tipo: adversa
     relevantes: [codigo-penal:art147-A, lei-11340-2006:art7]
+    trechos_relevantes: [lei-11340-2006:art7-p2]
     status: rascunho
     origem: grupo
   - id: q158
     pergunta: N sei oq fazer, ele levou meu celular e to presa em casa
     tipo: adversa
     relevantes: [codigo-penal:art148, lei-11340-2006:art7]
+    trechos_relevantes: [lei-11340-2006:art7-p2, lei-11340-2006:art7-p4]
     status: rascunho
     origem: grupo
   - id: q159
@@ -1052,12 +1089,14 @@ perguntas:
     pergunta: O traste me ameaçou de morte se eu saísse de casa, dá pra colocar ele na tranca?
     tipo: adversa
     relevantes: [lei-11340-2006:art7, codigo-penal:art147, lei-11340-2006:art20]
+    trechos_relevantes: [lei-11340-2006:art7-p2]
     status: rascunho
     origem: grupo
   - id: q161
     pergunta: Fiquei sem nenhum tostão porque ele trancou meus cartão e levou a chave do carro, o juiz faz ele me devolver?
     tipo: adversa
     relevantes: [lei-11340-2006:art7, lei-11340-2006:art24]
+    trechos_relevantes: [lei-11340-2006:art7-p4]
     status: rascunho
     origem: grupo
   - id: q162

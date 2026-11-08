@@ -67,11 +67,11 @@ não é revisor dela. Meta: 150 a 300.
 | | |
 |---|---|
 | Data | 07/11/2026 |
-| Corpus | versão `68fa3d5ea28f`: 96 trechos (93 de legislação + 3 de jurisprudência), 9 fontes |
-| Gabarito | versão `7e4ef9e1910b`: 166 perguntas, 31 revisadas e 135 em rascunho |
+| Corpus | versão `174e8766c4b2`: 101 trechos (98 de legislação + 3 de jurisprudência), 9 fontes; art. 7º da LMP dividido por inciso |
+| Gabarito | versão `cb7a8926414d`: 166 perguntas, 31 revisadas e 135 em rascunho |
 | Perguntas usadas | 143 com resposta (78 coloquiais, 33 adversas, 32 diretas) e 23 sem resposta |
-| Comandos | `avaliar.py --incluir-rascunho --recuperador <nome>` e `comparar.py 68fa3d5ea28f-7e4ef9e1910b` |
-| Arquivos | `avaliacao/resultados/<recuperador>-68fa3d5ea28f-7e4ef9e1910b.json` |
+| Comandos | `avaliar.py --incluir-rascunho --recuperador <nome>` e `comparar.py 174e8766c4b2-cb7a8926414d` |
+| Arquivos | `avaliacao/resultados/<recuperador>-174e8766c4b2-cb7a8926414d.json` |
 
 As versões são hashes do conteúdo (`corpus/manifesto.json` e `avaliacao/gabarito.yaml`):
 qualquer mudança gera outra versão, e cada resultado fica num arquivo próprio. Como a maior
@@ -80,74 +80,89 @@ si, não como medida final.
 
 ### Avaliação por artigo (143 perguntas)
 
-As partes `-p1`/`-p2` de um artigo dividido contam como um só artigo.
+As partes de um artigo dividido (`-p1`, `-p2`...) contam como um só artigo. Em negrito, o
+melhor valor de cada coluna.
 
 | Recuperador | acerto@1 | acerto@3 | acerto@5 | acerto@10 | recall@5 | recall@10 | MRR | nDCG@10 |
 |---|---|---|---|---|---|---|---|---|
-| BM25 (`lexical`) | 0,34 | 0,50 | 0,57 | 0,68 | 0,50 | 0,62 | 0,44 | 0,46 |
-| Densa e5-small | 0,37 | 0,57 | 0,66 | 0,83 | 0,57 | 0,72 | 0,50 | 0,52 |
-| Híbrida e5-small | 0,40 | 0,61 | 0,73 | 0,84 | 0,63 | 0,75 | 0,53 | 0,54 |
-| Densa e5-base | 0,39 | 0,60 | 0,76 | 0,87 | 0,65 | 0,78 | 0,54 | 0,56 |
-| Híbrida e5-base | 0,41 | 0,66 | 0,78 | 0,86 | 0,67 | 0,77 | 0,56 | 0,58 |
-| **Densa BGE-M3** | **0,50** | **0,71** | **0,80** | **0,89** | **0,70** | 0,79 | **0,63** | **0,62** |
-| Híbrida BGE-M3 | 0,48 | 0,64 | 0,76 | 0,88 | 0,66 | **0,80** | 0,60 | 0,61 |
+| BM25 (`lexical`) | 0,36 | 0,52 | 0,59 | 0,69 | 0,52 | 0,63 | 0,46 | 0,47 |
+| Densa e5-small | 0,38 | 0,55 | 0,63 | 0,76 | 0,55 | 0,67 | 0,49 | 0,50 |
+| Híbrida e5-small | 0,39 | 0,62 | 0,69 | 0,81 | 0,59 | 0,73 | 0,52 | 0,53 |
+| Densa e5-base | 0,41 | 0,64 | 0,79 | 0,88 | 0,67 | 0,79 | 0,56 | 0,58 |
+| Híbrida e5-base | 0,45 | 0,69 | **0,82** | 0,89 | 0,69 | 0,79 | 0,60 | 0,61 |
+| Densa BGE-M3 | **0,51** | **0,72** | 0,81 | **0,90** | **0,71** | **0,81** | **0,64** | **0,64** |
+| Híbrida BGE-M3 | 0,50 | 0,66 | 0,78 | **0,90** | 0,67 | **0,81** | 0,62 | 0,63 |
 
-Por tipo de pergunta (acerto@1, BGE-M3 densa × BM25): diretas 0,72 × 0,59, coloquiais
-0,47 × 0,26, adversas 0,36 × 0,27.
+Por tipo de pergunta (acerto@1, BGE-M3 densa × BM25): diretas 0,72 × 0,62, coloquiais
+0,49 × 0,27, adversas 0,36 × 0,30.
 
 ### Avaliação por trecho (143 perguntas)
 
 Cada parte de um artigo dividido conta separadamente: trazer o `art22-p2` quando a
-resposta está no `art22-p1` não é acerto. É a medida mais próxima do que a LLM vai ler.
-Todas as 143 perguntas têm a parte certa indicada no gabarito.
+resposta está no `art22-p1`, ou o inciso de violência física quando a pergunta é sobre
+violência patrimonial, não é acerto. É a medida mais próxima do que a LLM vai ler. Todas
+as 143 perguntas têm a parte certa indicada no gabarito.
 
 | Recuperador | acerto@1 | acerto@3 | acerto@5 | acerto@10 | recall@5 | recall@10 | MRR | nDCG@10 |
 |---|---|---|---|---|---|---|---|---|
-| BM25 (`lexical`) | 0,34 | 0,49 | 0,56 | 0,66 | 0,49 | 0,60 | 0,43 | 0,45 |
-| Densa e5-small | 0,36 | 0,55 | 0,65 | 0,83 | 0,55 | 0,71 | 0,49 | 0,51 |
-| Híbrida e5-small | 0,39 | 0,59 | 0,72 | 0,84 | 0,62 | 0,73 | 0,52 | 0,53 |
-| Densa e5-base | 0,39 | 0,59 | 0,75 | 0,87 | 0,63 | 0,77 | 0,54 | 0,55 |
-| Híbrida e5-base | 0,41 | 0,66 | 0,78 | 0,86 | 0,67 | 0,76 | 0,56 | 0,57 |
-| **Densa BGE-M3** | **0,50** | **0,71** | **0,80** | **0,88** | **0,69** | 0,77 | **0,62** | **0,61** |
-| Híbrida BGE-M3 | 0,48 | 0,63 | 0,76 | 0,87 | 0,65 | **0,78** | 0,59 | 0,60 |
-
-A ordem entre os recuperadores é a mesma da avaliação por artigo; os valores ficam de 0
-a 0,03 abaixo, pelas perguntas em que veio a parte errada de um artigo dividido.
+| BM25 (`lexical`) | 0,36 | 0,52 | 0,58 | 0,66 | 0,50 | 0,59 | 0,45 | 0,46 |
+| Densa e5-small | 0,38 | 0,52 | 0,61 | 0,72 | 0,50 | 0,63 | 0,47 | 0,47 |
+| Híbrida e5-small | 0,38 | 0,59 | 0,67 | 0,78 | 0,57 | 0,67 | 0,50 | 0,50 |
+| Densa e5-base | 0,40 | 0,60 | 0,71 | 0,86 | 0,60 | 0,75 | 0,54 | 0,55 |
+| Híbrida e5-base | 0,45 | 0,66 | 0,77 | 0,86 | 0,63 | 0,75 | 0,58 | 0,58 |
+| Densa BGE-M3 | **0,50** | **0,71** | **0,80** | **0,88** | **0,69** | **0,78** | **0,63** | **0,61** |
+| Híbrida BGE-M3 | **0,50** | 0,65 | 0,76 | 0,87 | 0,64 | 0,76 | 0,61 | 0,60 |
 
 ### O que é conclusivo
 
 `comparar.py` calcula intervalos de confiança de 95% por bootstrap pareado (as mesmas
-perguntas sorteadas para todos os recuperadores). No MRR:
+perguntas sorteadas para todos os recuperadores). No MRR por artigo:
 
 | Recuperador | MRR | Diferença para a BGE-M3 densa | Conclusiva? |
 |---|---|---|---|
-| Densa BGE-M3 | 0,63 [0,57; 0,69] | — | — |
-| Híbrida BGE-M3 | 0,60 | −0,03 [−0,09; +0,03] | Não |
-| Híbrida e5-base | 0,56 | −0,07 [−0,14; 0,00] | No limite |
-| Densa e5-base | 0,54 | −0,09 [−0,16; −0,02] | Sim |
-| Híbrida e5-small | 0,53 | −0,10 [−0,17; −0,03] | Sim |
-| Densa e5-small | 0,50 | −0,13 [−0,20; −0,06] | Sim |
-| BM25 | 0,44 | −0,19 [−0,27; −0,12] | Sim |
+| Densa BGE-M3 | 0,64 [0,57; 0,70] | — | — |
+| Híbrida BGE-M3 | 0,62 | −0,02 [−0,07; +0,04] | Não |
+| Híbrida e5-base | 0,60 | −0,03 [−0,10; +0,03] | Não |
+| Densa e5-base | 0,56 | −0,07 [−0,14; −0,01] | Sim |
+| Híbrida e5-small | 0,52 | −0,12 [−0,18; −0,05] | Sim |
+| Densa e5-small | 0,49 | −0,15 [−0,22; −0,08] | Sim |
+| BM25 | 0,46 | −0,18 [−0,25; −0,11] | Sim |
 
-- A **BGE-M3** (densa ou híbrida) é melhor que a BM25 e que as e5 densas, com diferença
-  conclusiva. Entre a BGE-M3 densa e a híbrida, a diferença **não** é conclusiva.
-- No acerto@5, as cinco melhores ficam empatadas dentro do intervalo; o ganho da BGE-M3
-  aparece na **ordem** (acerto@1 e MRR), que é o que decide quais trechos chegam à LLM.
-- Os números caíram em relação ao teste anterior (66 perguntas) porque o gabarito novo é
-  mais difícil: mais perguntas coloquiais e adversas, e mais perguntas com vários artigos
-  relevantes.
-- **A recusa não sai do escore da busca.** Com o melhor limiar possível, a BGE-M3 recusa
-  só 3 das 23 perguntas sem resposta (sem recusar nenhuma com resposta); as híbridas e a
-  BM25, nenhuma. A recusa precisa de outro sinal (reranqueador ou verificação pela LLM).
+- A **BGE-M3** densa é melhor que a BM25 e que as e5 densas e a híbrida e5-small, com
+  diferença conclusiva. Ela, a BGE-M3 híbrida e a híbrida e5-base ficam empatadas dentro
+  do intervalo.
+- **Dividir o art. 7º por inciso foi neutro.** Por artigo, a BGE-M3 densa subiu 0,01 no
+  acerto@5 e no MRR (não conclusivo); por trecho, ficou igual, mesmo com a tarefa mais
+  difícil (agora precisa vir o inciso certo). As e5 pioraram um pouco por trecho.
+- **A recusa não sai do escore da busca.** Com o melhor limiar possível, a BGE-M3 densa
+  recusa só 3 das 23 perguntas sem resposta (sem recusar nenhuma com resposta); os outros
+  recuperadores, nenhuma. A recusa precisa de outro sinal (reranqueador ou verificação
+  pela LLM).
+
+### Análise de erros (BGE-M3 densa, corpus `68fa3d5ea28f`)
+
+Antes da divisão do art. 7º, a BGE-M3 densa não trazia nenhum artigo relevante nos 5
+primeiros em 28 das 143 perguntas. Os erros se concentram em três causas:
+
+- **Vocabulário diferente do da lei.** A pergunta diz "cadeia", "papel do hospital",
+  "pegou meu celular"; a lei diz "prisão", "prontuário", "retenção de objetos". É o caso
+  do art. 7º, relevante em 35 perguntas e presente nos 5 primeiros em só 4 (8 depois da
+  divisão por inciso), e de perguntas sobre os arts. 9, 10-A e 21.
+- **Artigos "ímã".** Os arts. 12-C e 12-D começam com uma frase genérica ("risco atual ou
+  iminente à vida ou à integridade física, sexual, psicológica, moral ou patrimonial da
+  mulher"). O 12-C aparece nos 5 primeiros de 68 das 143 perguntas e é relevante em 3; o
+  12-D, em 45, e não é relevante em nenhuma. Há efeito parecido entre crimes vizinhos
+  (estupro no lugar de cárcere privado, lesão corporal no lugar de importunação sexual).
+- **Gabarito.** Poucos casos: uma pergunta sem texto (q132) e algumas com rótulos
+  provavelmente incompletos (q094, q123, q141).
+
+Em 23 das 28 falhas o artigo certo está entre os 30 primeiros candidatos, ao alcance de
+um reranqueador. Próximos passos: palavras-chave por trecho (em andamento no grupo) e
+reranqueador.
 
 Resultados de testes anteriores (outros corpus e gabaritos) continuam em
-`avaliacao/resultados/`, com a versão no nome do arquivo, mas não são comparáveis com esta
-tabela.
-
-O avaliador preserva as métricas por artigo e também calcula métricas por trecho. Para
-artigos não divididos, o rótulo é automático. Artigos divididos exigem os campos
-`trechos_relevantes`/`trechos_parciais`; enquanto faltarem, o relatório informa a
-cobertura e não inventa qual parte seria correta.
+`avaliacao/resultados/`, com a versão no nome do arquivo, mas não são comparáveis com estas
+tabelas.
 
 ## Decisões da ingestão
 
