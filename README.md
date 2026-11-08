@@ -31,7 +31,6 @@ O índice denso precisa ser refeito sempre que o corpus mudar (o script avisa).
 |---|---|
 | `fontes.yaml` | Lista das fontes oficiais. Só entra no corpus o que estiver aqui |
 | `ingestao.py` | Baixa as páginas do Planalto e divide em trechos por artigo |
-| `enriquecimento.yaml` | Palavras-chave, expressões e categorias por trecho, usadas só no índice de busca |
 | `dados/brutos/` | Páginas originais, como vieram do site (para reproduzir o corpus) |
 | `corpus/trechos.jsonl` | Um trecho por linha, com texto e metadados |
 | `corpus/manifesto.json` | Versão do corpus (hash), data e contagem por fonte |
@@ -159,10 +158,6 @@ cobertura e não inventa qual parte seria correta.
   e uma forma de violência (física, psicológica, sexual, patrimonial, moral, vicária), as
   mesmas categorias do classificador. Inteiro, o art. 7º misturava as seis e quase nunca
   era recuperado.
-- **Enriquecimento** (`enriquecimento.yaml`): termos no jeito como a usuária escreve, que
-  entram só no índice (BM25 e embeddings), nunca no texto entregue à LLM. Devem ser
-  escritos a partir da lei e de fontes externas, **sem olhar o gabarito**. O enriquecimento
-  entra no hash do trecho, então editá-lo muda a versão do corpus.
 - **Texto revogado é descartado.** O Planalto mantém a redação antiga riscada
   (`<strike>` ou `line-through`); ela nunca entra no corpus.
 - **Anotações de alteração** ("Incluído pela Lei nº ...") saem do texto e vão para o
