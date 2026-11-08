@@ -1,0 +1,14 @@
+.git/
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.pytest-tmp/
+*.egg-info/
+indice/
+tests/
+test_rag.py
+editor/
+avaliacao/resultados/
+avaliacao/*.bak
