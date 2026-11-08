@@ -900,12 +900,6 @@ perguntas:
     relevantes: [lei-11340-2006:art23]
     status: rascunho
     origem: grupo
-  - id: q132
-    pergunta: x
-    tipo: direta
-    relevantes: [lei-11340-2006:art23]
-    status: rascunho
-    origem: grupo
   - id: q133
     pergunta: Vou saber quando ele sair da cadeia?
     tipo: coloquial
