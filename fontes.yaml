@@ -5,6 +5,8 @@
 #
 # artigos: quando presente, só esses artigos do documento entram no corpus
 #          (para documentos grandes como o Código Penal e a Constituição).
+# dividir_por_inciso: artigos que viram um trecho por inciso (cada um com o caput), para
+#          artigos que listam assuntos distintos. Os trechos ficam -p1, -p2... na ordem dos incisos.
 # extracao: trechos_textuais permite selecionar parágrafos de páginas oficiais que
 #          não são divididas em artigos. Cada item usa uma frase distintiva em
 #          "contem"; se a página mudar e a frase sumir, a ingestão falha.
@@ -17,6 +19,9 @@ fontes:
     jurisdicao: Brasil
     publicado_em: "2006-08-07"
     url: https://www.planalto.gov.br/ccivil_03/_ato2004-2006/2006/lei/l11340.htm
+    # art. 7º: uma forma de violência por inciso (I física ... VI vicária); inteiro, o trecho
+    # quase nunca era recuperado (ver a análise de erros no README)
+    dividir_por_inciso: ["7"]
 
   - id: codigo-penal
     documento: Código Penal (Decreto-Lei nº 2.848/1940)

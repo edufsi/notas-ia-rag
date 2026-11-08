@@ -3,7 +3,7 @@ from collections import defaultdict
 
 from avaliar import metricas, rotulos_por_trecho
 from busca_lexical import PESOS_BM25
-from ingestao import extrair_trechos_textuais
+from ingestao import dividir_por_inciso, extrair_trechos_textuais
 
 
 class RagTests(unittest.TestCase):
@@ -33,7 +33,20 @@ class RagTests(unittest.TestCase):
             }])
 
     def test_bm25_weights_follow_all_fts_columns(self):
-        self.assertEqual(PESOS_BM25, (0.0, 1.0, 0.3, 0.2))
+        # id, texto, contexto, documento, enriquecimento
+        self.assertEqual(PESOS_BM25, (0.0, 1.0, 0.3, 0.2, 1.0))
+
+    def test_split_by_inciso_repeats_caput(self):
+        partes = dividir_por_inciso([
+            "Art. 7º São formas de violência:",
+            "I - a violência física;",
+            "II - a violência psicológica;",
+            "a) alínea do inciso II;",
+        ])
+        self.assertEqual([r for r, _ in partes], ["I", "II"])
+        self.assertEqual(partes[0][1], "Art. 7º São formas de violência:\nI - a violência física;")
+        self.assertTrue(partes[1][1].startswith("Art. 7º São formas de violência:\nII -"))
+        self.assertTrue(partes[1][1].endswith("a) alínea do inciso II;"))
 
     def test_unsplit_article_maps_to_its_only_chunk(self):
         mapa = defaultdict(list, {"lei:art7": ["lei:art7"]})

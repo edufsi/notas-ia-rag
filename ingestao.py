@@ -27,6 +27,10 @@ RAIZ = Path(__file__).resolve().parent
 BRUTOS = RAIZ / "dados" / "brutos"
 CORPUS = RAIZ / "corpus"
 TAMANHO_MAXIMO = 2500  # caracteres; artigos maiores são divididos mantendo o caput
+INCISO = re.compile(r"^([IVXLC]+)\s*[-–]\s*")
+# Enriquecimento: termos extras por trecho que entram só no índice de busca (ver enriquecimento.yaml)
+CATEGORIAS = {"fisica", "psicologica", "sexual", "patrimonial", "moral", "vicaria"}
+CAMPOS_ENRIQUECIMENTO = {"palavras_chave", "expressoes", "categorias"}
 
 # "(Incluído pela Lei nº 13.641, de 2018)", "(Redação dada pela ...)", "(Vide ...)", "(Vigência)" etc.
 ANOTACAO = re.compile(
@@ -262,6 +266,47 @@ def dividir(linhas):
     return partes
 
 
+def dividir_por_inciso(linhas):
+    """Um trecho por inciso, cada um com o caput. Para artigos que listam assuntos distintos
+    (como o art. 7º da Lei Maria da Penha, uma forma de violência por inciso), um trecho
+    único mistura tudo e não se parece com nenhuma pergunta específica.
+
+    Devolve [(rótulo do inciso, texto)]. Linhas que não abrem inciso (alíneas, parágrafos)
+    ficam com o inciso anterior."""
+    inicio = next(i for i, l in enumerate(linhas) if INICIO_ARTIGO.match(l))
+    cabeca, partes = linhas[:inicio + 1], []
+    for linha in linhas[inicio + 1:]:
+        m = INCISO.match(linha)
+        if m:
+            partes.append((m.group(1), [linha]))
+        elif partes:
+            partes[-1][1].append(linha)
+        else:
+            cabeca.append(linha)
+    if not partes:
+        raise ValueError("artigo sem incisos: " + linhas[inicio][:60])
+    return [(rotulo, "\n".join(cabeca + corpo)) for rotulo, corpo in partes]
+
+
+def carregar_enriquecimento():
+    """Id do trecho -> {palavras_chave, expressoes, categorias}, validado."""
+    caminho = RAIZ / "enriquecimento.yaml"
+    if not caminho.exists():
+        return {}
+    dados = (yaml.safe_load(caminho.read_text(encoding="utf-8")) or {}).get("trechos") or {}
+    for id_trecho, campos in dados.items():
+        campos = campos or {}
+        estranhos = set(campos) - CAMPOS_ENRIQUECIMENTO
+        if estranhos:
+            sys.exit(f"enriquecimento.yaml, {id_trecho}: campos desconhecidos {sorted(estranhos)}")
+        invalidas = set(campos.get("categorias") or []) - CATEGORIAS
+        if invalidas:
+            sys.exit(f"enriquecimento.yaml, {id_trecho}: categorias inválidas {sorted(invalidas)}; "
+                     f"use {sorted(CATEGORIAS)}")
+        dados[id_trecho] = {c: list(campos.get(c) or []) for c in sorted(CAMPOS_ENRIQUECIMENTO)}
+    return dados
+
+
 def data_no_titulo(html):
     """Lê a data do título da norma ("LEI Nº 11.340, DE 7 DE AGOSTO DE 2006") para conferir o fontes.yaml."""
     meses = ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho",
@@ -331,14 +376,20 @@ def gerar(forcar_download=False):
         if data and data != fonte["publicado_em"]:
             print(f"  AVISO {fonte['id']}: data no título ({data}) difere do fontes.yaml ({fonte['publicado_em']})")
 
+        por_inciso = set(fonte.get("dividir_por_inciso") or [])
         for a in unicos:
-            partes = dividir(a["linhas"])
-            for i, texto in enumerate(partes, 1):
+            if a["numero"] in por_inciso:
+                partes = [(f"Art. {a['numero']}, inciso {r}", t) for r, t in dividir_por_inciso(a["linhas"])]
+            else:
+                textos = dividir(a["linhas"])
+                partes = [(f"Art. {a['numero']}" + (f" (parte {i}/{len(textos)})" if len(textos) > 1 else ""), t)
+                          for i, t in enumerate(textos, 1)]
+            for i, (secao, texto) in enumerate(partes, 1):
                 sufixo = f"-p{i}" if len(partes) > 1 else ""
                 trechos.append({
                     "id": f"{fonte['id']}:art{a['numero']}{sufixo}",
                     "documento": fonte["documento"],
-                    "secao": f"Art. {a['numero']}" + (f" (parte {i}/{len(partes)})" if len(partes) > 1 else ""),
+                    "secao": secao,
                     "contexto": a["contexto"],
                     "texto": texto,
                     "orgao": fonte["orgao"],
@@ -356,15 +407,30 @@ def gerar(forcar_download=False):
                        "trechos": sum(1 for t in trechos if t["id"].startswith(fonte["id"] + ":"))})
         print(f"  {fonte['id']}: {len(unicos)} artigos")
 
+    # enriquecimento: entra no trecho e no hash (muda a versão do corpus), mas não no texto
+    enriquecimento = carregar_enriquecimento()
+    desconhecidos = set(enriquecimento) - {t["id"] for t in trechos}
+    if desconhecidos:
+        sys.exit(f"enriquecimento.yaml cita trechos que não existem no corpus: {sorted(desconhecidos)}")
+    for t in trechos:
+        extra = enriquecimento.get(t["id"])
+        if extra and any(extra.values()):
+            t["enriquecimento"] = extra
+            t["hash"] = hashlib.sha256(
+                (t["texto"] + json.dumps(extra, ensure_ascii=False, sort_keys=True)).encode("utf-8")
+            ).hexdigest()
+    enriquecidos = sum(1 for t in trechos if "enriquecimento" in t)
+
     CORPUS.mkdir(parents=True, exist_ok=True)
     with (CORPUS / "trechos.jsonl").open("w", encoding="utf-8", newline="\n") as f:
         for t in trechos:
             f.write(json.dumps(t, ensure_ascii=False) + "\n")
 
     versao = hashlib.sha256("".join(t["hash"] for t in trechos).encode()).hexdigest()[:12]
-    manifesto = {"versao": versao, "gerado_em": hoje, "total_trechos": len(trechos), "fontes": resumo}
+    manifesto = {"versao": versao, "gerado_em": hoje, "total_trechos": len(trechos),
+                 "trechos_enriquecidos": enriquecidos, "fontes": resumo}
     (CORPUS / "manifesto.json").write_text(json.dumps(manifesto, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print(f"Corpus {versao}: {len(trechos)} trechos em {CORPUS / 'trechos.jsonl'}")
+    print(f"Corpus {versao}: {len(trechos)} trechos ({enriquecidos} enriquecidos) em {CORPUS / 'trechos.jsonl'}")
 
 
 if __name__ == "__main__":
